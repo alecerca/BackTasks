@@ -1,5 +1,6 @@
 ﻿using BackTasks.Controllers;
 using BackTasks.Repositorios.IRepositorio;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace BackTasks.Models
@@ -12,7 +13,7 @@ namespace BackTasks.Models
         public string Subject { get; set; }
         public string Audience { get; set; }
 
-        public async Task<dynamic> ValidarToken(ClaimsIdentity identity)
+        public async Task<ActionResult<dynamic>> ValidarToken(ClaimsIdentity identity)
         {
             try
             {

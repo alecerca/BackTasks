@@ -166,6 +166,7 @@ namespace BackTasks.Controllers
                 jwt.Issuer,
                 jwt.Audience,
                 claims,
+                expires: DateTime.Now.AddDays(1),
                 signingCredentials: signin
             );
             return new
