@@ -14,8 +14,10 @@ namespace BackTasks
 
             CreateMap<Usuario, UsuarioDtoCreate>().ReverseMap();
             CreateMap<Proyecto, ProyectoDtoCreate>().ReverseMap();
+            CreateMap<Tarea, TareaDtoCreate>().ReverseMap();
 
             CreateMap<Proyecto, ProyectoDtoUpdate>().ReverseMap();
+            CreateMap<Tarea, TareaDtoUpdate>().ReverseMap();
         }
     }
 }

@@ -2,10 +2,9 @@
 
 namespace BackTasks.Models.Dto
 {
-    public class ProyectoDtoCreate
+    public class TareaDtoCreate
     {
         [Required]
         public string Nombre { get; set; }
-
     }
 }
