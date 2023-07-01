@@ -154,14 +154,14 @@ namespace BackTasks.Controllers
             return _response;
         }
 
-        [HttpDelete("{proyecto}/{id}")]
+        [HttpDelete("{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> EliminarTarea(int id, int proyecto)
+        public async Task<IActionResult> EliminarTarea(int id)
         {
             try
             {
@@ -177,19 +177,10 @@ namespace BackTasks.Controllers
 
                 var user = await _userRepo.Obtener(v => v.Id.ToString() == num);
 
-                if(proyecto <= 0 && id <= 0)
+                if (id <= 0)
                 {
-                    _response.isExitoso =false;
-                    _response.StatusCode = HttpStatusCode.BadRequest;
-                    return BadRequest(_response);
-                }
-
-                var proye = await _proyeRepo.Obtener(v => v.Id == proyecto && v.Creador == user.Id);
-
-                if (proye == null)
-                {
-                    _response.StatusCode = HttpStatusCode.BadRequest;
                     _response.isExitoso = false;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
 
@@ -200,22 +191,17 @@ namespace BackTasks.Controllers
                     return Unauthorized(_response);
                 }
 
-                if(await _tareaRepo.Obtener(v => v.IdP == proye.Id) != null)
+                var tarea = await _tareaRepo.Obtener(v => v.Id == id);
+                if(tarea == null)
                 {
-                    var tarea = await _tareaRepo.Obtener(v => v.Id == id);
-                    if(tarea == null)
-                    {
-                        _response.StatusCode = HttpStatusCode.NotFound;
-                        _response.isExitoso = false;
-                        return NotFound(_response);
-                    }
-
-                    await _tareaRepo.Remover(tarea);
-
-                    _response.StatusCode = HttpStatusCode.NoContent;
-                    return Ok(_response);
-
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.isExitoso = false;
+                    return NotFound(_response);
                 }
+
+                await _tareaRepo.Remover(tarea);
+                _response.StatusCode = HttpStatusCode.NoContent;
+                return Ok(_response);    
 
             }
             catch (Exception ex)
@@ -226,9 +212,9 @@ namespace BackTasks.Controllers
             return BadRequest(_response);
         }
 
-        [HttpPut("{proyecto}/{id}")]
+        [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> ActualizarTarea(int proyecto,int id, [FromBody] TareaDtoUpdate updateDto)
+        public async Task<IActionResult> ActualizarTarea(int id, [FromBody] TareaDtoUpdate updateDto)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (identity.Claims.Count() == 0)
@@ -257,8 +243,6 @@ namespace BackTasks.Controllers
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 return BadRequest(_response);
             }
-
-            updateDto.IdP = proyecto;
             updateDto.Id = id;
 
             if(await _proyeRepo.Obtener(v => v.Id == updateDto.IdP) == null)
@@ -269,6 +253,7 @@ namespace BackTasks.Controllers
             Tarea modelo = _mapper.Map<Tarea>(updateDto);
 
             await _tareaRepo.Actualizar(modelo);
+            _response.Resultado = modelo;
             _response.StatusCode = HttpStatusCode.NoContent;
             return Ok(_response);
 

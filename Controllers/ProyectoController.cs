@@ -30,13 +30,13 @@ namespace BackTasks.Controllers
             _userRepo = userRepo;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<APIResponse>> GetProyecto(int id)
+        public async Task<ActionResult<APIResponse>> GetProyecto()
         {
             try
             {
@@ -59,7 +59,7 @@ namespace BackTasks.Controllers
                     return Unauthorized(_response);
                 }
 
-                IEnumerable<Proyecto> proyeList = await _proyeRepo.ObtenerTodos(v => v.Creador == id && user.Id == id);
+                IEnumerable<Proyecto> proyeList = await _proyeRepo.ObtenerTodos(v => v.Creador == user.Id);
 
                 if(proyeList == null)
                 {

@@ -8,5 +8,6 @@ namespace BackTasks
         public bool isExitoso { get; set; } = true;
         public List<string> Errors { get; set; }
         public Object Resultado { get; set; }
+        public Object Token { get; set; }
     }
 }
